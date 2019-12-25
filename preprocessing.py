@@ -1,15 +1,17 @@
-import soundfile as sf
-import os
-import matplotlib.pyplot as plt
-import numpy as np
-import gammatone.gtgram as gt
-from scipy import signal
-import re
-from time import time
 import multiprocessing as mp
+import os
 import pickle
-import tqdm
+import re
+
+import gammatone.gtgram as gt
+import matplotlib.pyplot as plt
 import mutagen
+import numpy as np
+import soundfile as sf
+import tqdm
+from scipy import signal
+
+TEST_REGEX = re.compile('')
 
 
 def make_spect(filepath, method='fourier', height=60, interval=1, verbose=False, max_len=1800):
@@ -103,29 +105,19 @@ def gt_and_store(song_loc, locale='cepstra\\'):
     :param locale: str folder to drop cepstra in
     :return: NoneType
     """
-    mdata = mutagen.File(song_loc)
-    album = mdata['album'][0]
-    try:
-        albumartist = mdata['albumartist'][0]
-    except KeyError:
-        albumartist = mdata['artist'][0]
-    name = re.sub('[\\\\/]', '', mdata['title'][0])
-    filename = f'{locale}{albumartist} - {album} - {name}.pkl'
+    tag = corpus_tag_generator(song_loc)
+    filename = f'{locale}{tag}.pkl'
     filename = re.sub('[?*:"<>/|]', "", filename)
     if not os.path.exists(filename):
         cepstrum = make_spect(song_loc, method='gamma', height=16)
-
+        if cepstrum is None:
+            return False
         with open(filename, 'wb+') as f:
             pickle.dump(cepstrum, f)
+            return tag
 
 
-def preprocess(target_regex, library_locale='D:\\What.cd\\'):
-    """
-    This runs ```gt_and_store()``` on every file which is in a folder that matches with target_regex.
-    :param target_regex:
-    :param library_locale:
-    :return:
-    """
+def library_from_regex(target_regex, library_locale='D:\\What.cd\\'):
 
     targets = []
     lib = []
@@ -134,14 +126,76 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\'):
     targets += list(filter(r.match, os.listdir(library_locale)))
     for song in targets:
         library_addition(lib, song, locale=library_locale)
+    return lib
 
-    p = mp.Pool(4, maxtasksperchild=100)
+
+def preprocess(target_regex, library_locale='D:\\What.cd\\'):
+    """
+    This runs ```gt_and_store()``` on every file which is in a folder that matches with target_regex. Some notes about
+    running this on a personal computer. If you have more than 16 GB of ram, you should be fine. If you have 16 or less,
+    Be prepared for the spin-up to lag your computer. It should stabilize after a while once the processes
+    get out of sync. Also creates a dictionary that relates corpus tags to their file location.
+    :param target_regex: re.compile a regex of the things you want. Might be long and full of pipes.
+    :param library_locale: str the location of your music library.
+    :return: a list of successes and failures for if something went wrong with a song.
+    """
+
+    lib = library_from_regex(target_regex, library_locale=library_locale)
+    # TODO: Figure out an algorithm to calculate the best number of processes to use. Probably something like
+    #   (GB_of_ram // 5) up to half of mp.cpu_count.
+    #   Although on a hyperram machine this limit probably doesn't matter.
+    p = mp.Pool(2, maxtasksperchild=1000)
     if not os.path.exists('cepstra'):
         os.mkdir('cepstra')
-    ceps = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
+    tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
+    create_location_dictionary(lib, tags)
+
+
+def corpus_tag_generator(song_loc):
+    """
+    This looks at a file's metadata and turns it into a corpus tag for later usage.
+    :param song_loc: str the file location
+    :return: str the tag as used by the learning parts of the system.
+    """
+    mdata = mutagen.File(song_loc)
+    album = mdata['album'][0]
+    try:
+        albumartist = mdata['albumartist'][0]
+    except KeyError:
+        albumartist = mdata['artist'][0]
+    name = re.sub('[\\\\/]', '', mdata['title'][0])
+    filename = f'{albumartist} - {album} - {name}'
+    filename = re.sub('[?*:"<>/|]', "", filename)
+    return filename
+
+
+def create_location_dictionary(lib, tags=None):
+    """
+    Takes everything in the library and adds it to a location dictionary stored in locations.pkl
+    :param lib: list of song locations
+    :param tags: list or NoneType if you already have the tag, then you don't need to generate it again.
+    :return: NoneType
+    """
+    if os.path.exists('locations.pkl') and os.path.getsize('locations.pkl') > 0:
+        with open('locations.pkl', 'rb') as file:
+            mdata_dict = pickle.load(file)
+        os.remove('locations.pkl')
+    else:
+        mdata_dict = {}
+
+    if tags is None:
+        tags = [None] * len(lib)
+
+    for song, tag in zip(lib, tags):
+        if tag:
+            mdata_dict[tag] = song
+        else:
+            mdata_dict[corpus_tag_generator(song)] = song
+
+    with open('locations.pkl', 'wb') as file:
+        pickle.dump(mdata_dict, file)
 
 
 if __name__ == '__main__':
-    reg = re.compile('Toby Fox|Darren|CHV|STRFKR|Starfucker|Presidents|Passion|Panic|VARIOUS|Imagine|Glass|Death Cab'
-                     '|Foo|Emanc|Avi|Coldplay|AWOL|Orchest|WALK|Walk|Juke|kingur|Group|Vulf|Finish|Beautiful|Counting')
+    reg = re.compile(TEST_REGEX)
     preprocess(reg)
