@@ -11,10 +11,22 @@ import soundfile as sf
 import tqdm
 from scipy import signal
 
-TEST_REGEX = re.compile('')
+TEST_REGEX = re.compile('Toby Fox|Darren|CHV|STRFKR|Starfucker|Presidents|Passion|Panic|VARIOUS|Imagine|Glass|Death Cab'
+                        '|Foo|Emanc|Avi|Coldplay|AWOL|Orchest|WALK|Walk|Juke|'
+                        'kingur|Group|Vulf|Finish|Beautiful|Counting'
+                        '|Letters|Watsky|Gin|Gemini|Future|Fountains|Corinne|Caravan|Owl|Charming|Vampire|Hideki|Elena'
+                        '|Plini|Long Winters|Cult|Chicago|2|MG|Odesza|Hozier|Daft|Cage'
+                        '|Pity Sex|Macklemore|Poppy|Paul|Say|'
+                        'Roots|Gang|Tycho|Glitch|Toad|fujitsu|sleepy fish|Moods'
+                        '|The Worst|Reich|Enya|blink|Toto|Zhu|wün|'
+                        'Daniel Hope|ABBA|Portugal|Zedd|Choice|Lorne|Work|Love|VA|Arctic|Chaos|Passenger|Madeon|Nico'
+                        '|Panama|Vík|Dobrinka|John|Capital|Yelle|Looking|Cuphead|Chillhop|Bobby|That|Tame|Sublime|'
+                        'Strong|Solar|Sleep|Steam|Sam|Seiji|Purity|Kelly|R.E.M.|Re|Monsters|Oasis|Nirvana|Nils|Monster'
+                        '|Marina|Maybe|Alice|watsky|Kid Cudi|Jungle|Mahler|Various|IRON|Iglu|Joey|Foxes|First|Eyes|'
+                        'Roosevelt|dead|Cro|Clean|Childish|Cinedelic|Pearl|Beck|Butthole|Red Hot|The Chainsmokers')
 
 
-def make_spect(filepath, method='fourier', height=60, interval=1, verbose=False, max_len=1800):
+def make_spect(filepath, method='fourier', height=60, interval=1, verbose=False, max_len=1080):
     """
     Turns a file containing sound data into a matrix for processing. Two methods are supported,
     fourier spectrum analysis, which returns a spectrogram, and gammatone which returns a gammatone quefrency cepstrum.
@@ -144,7 +156,7 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\'):
     # TODO: Figure out an algorithm to calculate the best number of processes to use. Probably something like
     #   (GB_of_ram // 5) up to half of mp.cpu_count.
     #   Although on a hyperram machine this limit probably doesn't matter.
-    p = mp.Pool(2, maxtasksperchild=1000)
+    p = mp.Pool(3, maxtasksperchild=1000)
     if not os.path.exists('cepstra'):
         os.mkdir('cepstra')
     tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
@@ -158,12 +170,19 @@ def corpus_tag_generator(song_loc):
     :return: str the tag as used by the learning parts of the system.
     """
     mdata = mutagen.File(song_loc)
-    album = mdata['album'][0]
+    try:
+        album = mdata['album'][0]
+    except KeyError:
+        album = "Unknown Album"
     try:
         albumartist = mdata['albumartist'][0]
     except KeyError:
         albumartist = mdata['artist'][0]
-    name = re.sub('[\\\\/]', '', mdata['title'][0])
+    try:
+        name = re.sub('[\\\\/]', '', mdata['title'][0])
+    except KeyError:
+        name = 'Unknown Track'
+
     filename = f'{albumartist} - {album} - {name}'
     filename = re.sub('[?*:"<>/|]', "", filename)
     return filename
