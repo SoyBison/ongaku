@@ -141,7 +141,7 @@ def library_from_regex(target_regex, library_locale='D:\\What.cd\\'):
     return lib
 
 
-def preprocess(target_regex, library_locale='D:\\What.cd\\'):
+def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
     """
     This runs ```gt_and_store()``` on every file which is in a folder that matches with target_regex. Some notes about
     running this on a personal computer. If you have more than 16 GB of ram, you should be fine. If you have 16 or less,
@@ -153,9 +153,6 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\'):
     """
 
     lib = library_from_regex(target_regex, library_locale=library_locale)
-    # TODO: Figure out an algorithm to calculate the best number of processes to use. Probably something like
-    #   (GB_of_ram // 5) up to half of mp.cpu_count.
-    #   Although on a hyperram machine this limit probably doesn't matter.
     p = mp.Pool(2, maxtasksperchild=1000)
     if not os.path.exists('cepstra'):
         os.mkdir('cepstra')

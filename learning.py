@@ -1,28 +1,15 @@
 import numpy as np
 import pickle
-import scipy
 import os
 from sklearn import manifold as mnfd
 from sklearn import decomposition as dcomp
 from sklearn import preprocessing as pre
 import pandas as pd
-from scipy.spatial.distance import squareform, pdist, euclidean, cdist
 from analysis import TEST_REGEX, library_from_regex
-from tempfile import mkdtemp
-from sklearn.metrics import make_scorer
-import re
-import tqdm
-import sys
-import warnings
-import winsound
-import mutagen
-from time import time
 import winsound
 from sklearn.pipeline import Pipeline
-from tempfile import mkdtemp
 import re
 from analysis import corpus_tag_generator
-import sys
 
 TEST_REGEX = re.compile(TEST_REGEX.pattern)
 
@@ -43,7 +30,7 @@ def load_corpus(loc='cepstra\\', precompiled=False):
     return corpus
 
 
-def create_tag_dict(lib, loc='locations.pkl', precompiled=False):
+def create_tag_dict(lib, loc='locations.pkl'):
     mdata_dict = {}
     for song in lib:
         mdata_dict[corpus_tag_generator(song)] = song
@@ -53,7 +40,7 @@ def create_tag_dict(lib, loc='locations.pkl', precompiled=False):
 
 
 def load_tag_dict(loc='locations.pkl'):
-    with open('locations.pkl', 'rb') as file:
+    with open(loc, 'rb') as file:
         mdata_dict = pickle.load(file)
     return mdata_dict
 
@@ -85,7 +72,7 @@ def flattened_corpus(corp):
     return new_corp
 
 
-def cropped_corpus(corp, tar_len=90):
+def cropped_corpus(corp, tar_len=90, pad_shorts=False):
     """
     tar_len must be EVEN
     """
@@ -96,12 +83,16 @@ def cropped_corpus(corp, tar_len=90):
             st = (s_len // 2) - (tar_len // 2)
             end = (s_len // 2) + (tar_len // 2)
             assert end - st == tar_len
-            new_corp[title] = song[:, st:end]
+            new_corp[title] = song[:,st:end]
+        else:
+            if pad_shorts:
+                new_corp[title] = np.pad(song, ((0, 0), (0, tar_len - s_len)), constant_values=np.log(0))
+
     return new_corp
 
 
-def train_model(processed_corp,
-                pipeline=Pipeline([('reduce_dims', dcomp.PCA()), ('embedding', mnfd.Isomap(n_components=45))])):
+def make_manifold(processed_corp,
+                  pipeline=Pipeline([('reduce_dims', dcomp.PCA()), ('embedding', mnfd.Isomap(n_components=45))])):
     flat_corp = flattened_corpus(processed_corp)
     songs = list(flat_corp.values())
     songs_scaled = np.nan_to_num(pre.RobustScaler().fit_transform(songs))
@@ -116,6 +107,10 @@ def train_model(processed_corp,
     return manifold_df
 
 
-
 if __name__ == '__main__':
     libr = library_from_regex(re.compile(''))
+    cor = load_corpus()
+    nc = cropped_corpus(cor, tar_len=120, pad_shorts=True)
+    mandf = make_manifold(nc)
+    with open('manifold.pkl') as file:
+        pickle.dump(mandf, file)
