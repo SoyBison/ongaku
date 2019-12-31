@@ -156,7 +156,7 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\'):
     # TODO: Figure out an algorithm to calculate the best number of processes to use. Probably something like
     #   (GB_of_ram // 5) up to half of mp.cpu_count.
     #   Although on a hyperram machine this limit probably doesn't matter.
-    p = mp.Pool(3, maxtasksperchild=1000)
+    p = mp.Pool(2, maxtasksperchild=1000)
     if not os.path.exists('cepstra'):
         os.mkdir('cepstra')
     tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
@@ -216,5 +216,5 @@ def create_location_dictionary(lib, tags=None):
 
 
 if __name__ == '__main__':
-    reg = re.compile(TEST_REGEX)
+    reg = re.compile('')
     preprocess(reg)
