@@ -130,6 +130,12 @@ def gt_and_store(song_loc, locale='cepstra\\'):
 
 
 def library_from_regex(target_regex, library_locale='D:\\What.cd\\'):
+    """
+    Takes in a regex, and a pointer to your music library and compiles a list of song locations from it.
+    :param target_regex: re.Pattern
+    :param library_locale: str
+    :return: list
+    """
 
     targets = []
     lib = []

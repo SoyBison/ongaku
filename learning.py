@@ -17,6 +17,14 @@ musicbee = 'C:\\Users\\Coen D. Needell\\Music\\MusicBee\\Playlists\\'  # Persona
 
 
 def load_corpus(loc='cepstra\\', precompiled=False):
+    """
+    Generates a corpus for machine learning from your preprocessed cepstra. Location should be the same folder you used
+    for the analysis.py run. Returns a dict with keys being the 'song code' as made by the analysis.corpus_tag_generator
+    function.
+    :param loc: str directory where the spectra are.
+    :param precompiled: bool triggers whether or not it should load the corpus from a pickle file or the cepstra folder
+    :return: dict
+    """
     if precompiled:
         with open('corpus.pkl', 'rb') as file:
             return pickle.load(file)
@@ -31,6 +39,12 @@ def load_corpus(loc='cepstra\\', precompiled=False):
 
 
 def create_tag_dict(lib, loc='locations.pkl'):
+    """
+    Makes a dictionary that relates the tags to associated filename.
+    :param lib: list contains all of the filenames.
+    :param loc: str file to dump the tag dictionary in if you want to avoid doing this more than once.
+    :return:
+    """
     mdata_dict = {}
     for song in lib:
         mdata_dict[corpus_tag_generator(song)] = song
@@ -112,5 +126,5 @@ if __name__ == '__main__':
     cor = load_corpus()
     nc = cropped_corpus(cor, tar_len=120, pad_shorts=True)
     mandf = make_manifold(nc)
-    with open('manifold.pkl') as file:
-        pickle.dump(mandf, file)
+    with open('manifold.pkl') as f:
+        pickle.dump(mandf, f)
