@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from learning import load_corpus
+from source.learning import load_corpus
 from scipy.spatial.distance import pdist
 
 

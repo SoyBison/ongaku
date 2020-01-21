@@ -5,11 +5,11 @@ from sklearn import manifold as mnfd
 from sklearn import decomposition as dcomp
 from sklearn import preprocessing as pre
 import pandas as pd
-from analysis import TEST_REGEX, library_from_regex
+from source.analysis import TEST_REGEX, library_from_regex
 import winsound
 from sklearn.pipeline import Pipeline
 import re
-from analysis import corpus_tag_generator
+from source.analysis import corpus_tag_generator
 
 TEST_REGEX = re.compile(TEST_REGEX.pattern)
 
@@ -26,14 +26,14 @@ def load_corpus(loc='cepstra\\', precompiled=False):
     :return: dict
     """
     if precompiled:
-        with open('corpus.pkl', 'rb') as file:
+        with open('../corpus.pkl', 'rb') as file:
             return pickle.load(file)
     corpus = {}
     for song in os.listdir(loc):
         with open(f'cepstra\\{song}', 'rb') as file:
             corpus[song.replace('.pkl', '')] = pickle.load(file)
     corpus = {title: song for title, song in corpus.items() if song is not None}
-    with open('corpus.pkl', 'wb') as file:
+    with open('../corpus.pkl', 'wb') as file:
         pickle.dump(corpus, file)
     return corpus
 
@@ -54,12 +54,25 @@ def create_tag_dict(lib, loc='locations.pkl'):
 
 
 def load_tag_dict(loc='locations.pkl'):
+    """
+    Loads the tag dictionary, and returns it.
+    :param loc: str location of pkl
+    :return:
+    """
     with open(loc, 'rb') as file:
         mdata_dict = pickle.load(file)
     return mdata_dict
 
 
 def generate_m3u(tags, title, reference=load_tag_dict(), locale='playlists\\'):
+    """
+    Takes a list of corpus tags and turns it into a playlist (.m3u).
+    :param tags: list of tags
+    :param title: name of plist
+    :param reference: dict tag dictionary, default just runs load_tag_dict()
+    :param locale: str place to dump your playlist
+    :return:
+    """
     with open(f'{locale}{title}.m3u', 'w+', encoding='utf-8') as file:
         for tag in tags:
             file.write(reference[tag] + '\n')

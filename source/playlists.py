@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from learning import load_tag_dict
+from source.learning import load_tag_dict
 from scipy.spatial.distance import pdist, cdist, squareform, euclidean
 from time import time
 

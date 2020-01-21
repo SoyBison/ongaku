@@ -160,8 +160,8 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
 
     lib = library_from_regex(target_regex, library_locale=library_locale)
     p = mp.Pool(2, maxtasksperchild=1000)
-    if not os.path.exists('cepstra'):
-        os.mkdir('cepstra')
+    if not os.path.exists('../cepstra'):
+        os.mkdir('../cepstra')
     tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
     create_location_dictionary(lib, tags)
 
@@ -198,10 +198,10 @@ def create_location_dictionary(lib, tags=None):
     :param tags: list or NoneType if you already have the tag, then you don't need to generate it again.
     :return: NoneType
     """
-    if os.path.exists('locations.pkl') and os.path.getsize('locations.pkl') > 0:
-        with open('locations.pkl', 'rb') as file:
+    if os.path.exists('../locations.pkl') and os.path.getsize('../locations.pkl') > 0:
+        with open('../locations.pkl', 'rb') as file:
             mdata_dict = pickle.load(file)
-        os.remove('locations.pkl')
+        os.remove('../locations.pkl')
     else:
         mdata_dict = {}
 
@@ -214,7 +214,7 @@ def create_location_dictionary(lib, tags=None):
         else:
             mdata_dict[corpus_tag_generator(song)] = song
 
-    with open('locations.pkl', 'wb') as file:
+    with open('../locations.pkl', 'wb') as file:
         pickle.dump(mdata_dict, file)
 
 
