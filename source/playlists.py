@@ -1,9 +1,5 @@
 import numpy as np
 import pandas as pd
-<<<<<<< HEAD:source/playlists.py
-=======
-from source.learning import load_tag_dict
->>>>>>> 4cdc39bd8b5258928fa23c2566d224cae86d3cbc:playlists.py
 from scipy.spatial.distance import pdist, cdist, squareform, euclidean
 from time import time
 import os

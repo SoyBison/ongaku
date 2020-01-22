@@ -9,8 +9,8 @@ def corpus_xdsd(mdf):
     I call this the xd_sd, it's a cross-dimensional standard deviation, it's essentially the average of the standard
     deviations in each dimension.
 
-    :param mdf:
-    :return:
+    :param mdf: pd.DataFrame of songs defining manifold location
+    :return: int the xd_sd
     """
     xd_sd = np.nanmean(mdf.std(axis=0))
     return xd_sd
