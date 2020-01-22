@@ -14,24 +14,24 @@ Ongaku
 Analysis
 ========
 
-.. automodule:: analysis
+.. automodule:: source.analysis
    :members:
 
 Learning
 ========
 
-.. automodule:: learning
+.. automodule:: source.learning
    :members:
 
 Metrics
 ========
 
 
-.. automodule:: metrics
+.. automodule:: source.metrics
    :members:
 
 Playlists
 =========
 
-.. automodule:: playlists
+.. automodule:: source.playlists
    :members:
