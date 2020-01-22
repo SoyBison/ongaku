@@ -5,11 +5,11 @@ from sklearn import manifold as mnfd
 from sklearn import decomposition as dcomp
 from sklearn import preprocessing as pre
 import pandas as pd
-from analysis import TEST_REGEX, library_from_regex
+from source.analysis import TEST_REGEX, library_from_regex
 import winsound
 from sklearn.pipeline import Pipeline
 import re
-from analysis import corpus_tag_generator
+from source.analysis import corpus_tag_generator
 
 TEST_REGEX = re.compile(TEST_REGEX.pattern)
 here = os.path.dirname(__file__)
