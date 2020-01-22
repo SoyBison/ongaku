@@ -1,0 +1,8 @@
+pandas
+scikit-learn
+scipy
+tqdm
+mutagen
+matplotlib
+soundfile
+numpy
