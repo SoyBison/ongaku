@@ -13,8 +13,6 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../source'))
-with open('../docs/requirements.txt') as f:
-    requirements = f.read().splitlines()
 
 
 # -- Project information -----------------------------------------------------
@@ -49,7 +47,6 @@ language = 'english'
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
-autodoc_mock_imports = requirements
 
 master_doc = 'index'
 
