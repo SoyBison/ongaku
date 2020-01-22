@@ -29,14 +29,14 @@ def load_corpus(loc='cepstra\\', precompiled=False):
     :return: dict
     """
     if precompiled:
-        with open('corpus.pkl', 'rb') as file:
+        with open('../corpus.pkl', 'rb') as file:
             return pickle.load(file)
     corpus = {}
     for song in os.listdir(loc):
         with open(f'cepstra\\{song}', 'rb') as file:
             corpus[song.replace('.pkl', '')] = pickle.load(file)
     corpus = {title: song for title, song in corpus.items() if song is not None}
-    with open('corpus.pkl', 'wb') as file:
+    with open('../corpus.pkl', 'wb') as file:
         pickle.dump(corpus, file)
     return corpus
 
@@ -59,10 +59,16 @@ def create_tag_dict(lib, loc=here + '/' + 'locations.pkl'):
     return mdata_dict
 
 
+<<<<<<< HEAD:source/learning.py
 def load_tag_dict(loc=here + '/' + 'locations.pkl'):
     """
     Loads the tag dictionary, and returns it.
 
+=======
+def load_tag_dict(loc='locations.pkl'):
+    """
+    Loads the tag dictionary, and returns it.
+>>>>>>> 4cdc39bd8b5258928fa23c2566d224cae86d3cbc:learning.py
     :param loc: str location of pkl
     :return:
     """
@@ -71,6 +77,7 @@ def load_tag_dict(loc=here + '/' + 'locations.pkl'):
     return mdata_dict
 
 
+<<<<<<< HEAD:source/learning.py
 def generate_m3u(tags, title, reference, locale='playlists\\'):
     """
     Takes a list of corpus tags and turns it into a playlist (.m3u).
@@ -78,6 +85,14 @@ def generate_m3u(tags, title, reference, locale='playlists\\'):
     :param tags: list of tags
     :param title: name of plist
     :param reference: dict tag dictionary, should be something like load_tag_dict()
+=======
+def generate_m3u(tags, title, reference=load_tag_dict(), locale='playlists\\'):
+    """
+    Takes a list of corpus tags and turns it into a playlist (.m3u).
+    :param tags: list of tags
+    :param title: name of plist
+    :param reference: dict tag dictionary, default just runs load_tag_dict()
+>>>>>>> 4cdc39bd8b5258928fa23c2566d224cae86d3cbc:learning.py
     :param locale: str place to dump your playlist
     :return:
     """

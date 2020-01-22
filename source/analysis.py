@@ -244,10 +244,10 @@ def create_location_dictionary(lib, tags=None):
 
     :return: NoneType
     """
-    if os.path.exists('locations.pkl') and os.path.getsize('locations.pkl') > 0:
-        with open('locations.pkl', 'rb') as file:
+    if os.path.exists('../locations.pkl') and os.path.getsize('../locations.pkl') > 0:
+        with open('../locations.pkl', 'rb') as file:
             mdata_dict = pickle.load(file)
-        os.remove('locations.pkl')
+        os.remove('../locations.pkl')
     else:
         mdata_dict = {}
 
@@ -260,7 +260,7 @@ def create_location_dictionary(lib, tags=None):
         else:
             mdata_dict[corpus_tag_generator(song)] = song
 
-    with open('locations.pkl', 'wb') as file:
+    with open('../locations.pkl', 'wb') as file:
         pickle.dump(mdata_dict, file)
 
 
