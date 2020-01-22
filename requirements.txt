@@ -6,3 +6,4 @@ mutagen
 matplotlib
 soundfile
 numpy
+gammatone
