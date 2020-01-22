@@ -198,8 +198,8 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
 
     lib = library_from_regex(target_regex, library_locale=library_locale)
     p = mp.Pool(2, maxtasksperchild=1000)
-    if not os.path.exists('../cepstra'):
-        os.mkdir('../cepstra')
+    if not os.path.exists('cepstra'):
+        os.mkdir('cepstra')
     tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
     create_location_dictionary(lib, tags)
 
