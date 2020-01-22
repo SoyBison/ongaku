@@ -6,4 +6,4 @@ mutagen
 matplotlib
 soundfile
 numpy
--e git://github.com/detly/gammatone
+-e git://github.com/detly/gammatone#egg=gammatone
