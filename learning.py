@@ -6,7 +6,6 @@ from sklearn import decomposition as dcomp
 from sklearn import preprocessing as pre
 import pandas as pd
 from analysis import TEST_REGEX, library_from_regex
-import winsound
 from sklearn.pipeline import Pipeline
 import re
 from analysis import corpus_tag_generator
@@ -136,7 +135,6 @@ def make_manifold(processed_corp,
     for title, song in zip(flat_corp, songs_transformed):
         manifold[title] = song
     manifold_df = pd.DataFrame(manifold)
-    winsound.MessageBeep(winsound.MB_ICONHAND)
     return manifold_df
 
 
