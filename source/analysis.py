@@ -32,13 +32,24 @@ def make_spect(filepath, method='fourier', height=60, interval=1, verbose=False,
     fourier spectrum analysis, which returns a spectrogram, and gammatone which returns a gammatone quefrency cepstrum.
     Gammatones take `much` longer, but are ostensibly better for feature analysis, and are smaller. Spectrograms are big
     but don't take very much time to create.
+
+
     :param filepath: str path to file
+
     :param method: str 'fourier' or 'gamma'
+
     :param max_len: int or float the maximum length in seconds of a song to convert. Important for memory management.
     Default is a half-hour
+
     :param height: int for gammatones, how many quefrency bins should be used. default 60.
+
+
     :param interval: int for gammatones, the width in seconds of the time bins. default 2.
+
+
     :param verbose: bool toggles behavior showing a plot of the returned 'gram.
+
+
     :return: np.array a matrix representing (in decibels) the completed analysis.
     """
     try:
@@ -78,7 +89,10 @@ def make_spect(filepath, method='fourier', height=60, interval=1, verbose=False,
 def song_name_gen(fname: str):
     """
     A utility function which takes a file name and strips out all the stuff that's probably not the song title.
+
+
     :param fname: str filename to work on
+
     :return: str a cleaned up title.
     """
     fname = fname.rsplit('\\', 1)[-1]
@@ -90,12 +104,22 @@ def song_name_gen(fname: str):
 def library_addition(library, target, locale='D:\\What.cd\\', filetype='.flac'):
     """
     A utility for recursively adding files of type filetype to a list. Stores them as a list of their full location.
+
+
     :param library: list the library you're adding to.
     Note that it edits library in-place so don't drop an unnamed object in there.
+
+
     :param target: str the top of the tree. do '' if you want this to be your locale.
+
+
     :param locale: str the location for the system to start from. Should be the location of your target.
     Default is my music library's location.
+
+
     :param filetype: str The file extension you want this to work on.
+
+
     :return: NoneType
     """
     try:
@@ -113,8 +137,12 @@ def gt_and_store(song_loc, locale='cepstra\\'):
     """
     This calculates the gammatone cepstrum, pickles it, and drops it in a designated folder. Default is a folder called
     cepstra. This acts like a worker function, so it doesn't return anything.
+
+
     :param song_loc: str filepath
+
     :param locale: str folder to drop cepstra in
+
     :return: NoneType
     """
     tag = corpus_tag_generator(song_loc)
@@ -132,8 +160,12 @@ def gt_and_store(song_loc, locale='cepstra\\'):
 def library_from_regex(target_regex, library_locale='D:\\What.cd\\'):
     """
     Takes in a regex, and a pointer to your music library and compiles a list of song locations from it.
+
+
     :param target_regex: re.Pattern
+
     :param library_locale: str
+
     :return: list
     """
 
@@ -153,15 +185,21 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
     running this on a personal computer. If you have more than 16 GB of ram, you should be fine. If you have 16 or less,
     Be prepared for the spin-up to lag your computer. It should stabilize after a while once the processes
     get out of sync. Also creates a dictionary that relates corpus tags to their file location.
+
+
     :param target_regex: re.compile a regex of the things you want. Might be long and full of pipes.
+
+
     :param library_locale: str the location of your music library.
+
+
     :return: a list of successes and failures for if something went wrong with a song.
     """
 
     lib = library_from_regex(target_regex, library_locale=library_locale)
     p = mp.Pool(2, maxtasksperchild=1000)
-    if not os.path.exists('cepstra'):
-        os.mkdir('cepstra')
+    if not os.path.exists('../cepstra'):
+        os.mkdir('../cepstra')
     tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
     create_location_dictionary(lib, tags)
 
@@ -169,7 +207,10 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
 def corpus_tag_generator(song_loc):
     """
     This looks at a file's metadata and turns it into a corpus tag for later usage.
+
+
     :param song_loc: str the file location
+
     :return: str the tag as used by the learning parts of the system.
     """
     mdata = mutagen.File(song_loc)
@@ -193,9 +234,14 @@ def corpus_tag_generator(song_loc):
 
 def create_location_dictionary(lib, tags=None):
     """
-    Takes everything in the library and adds it to a location dictionary stored in locations.pkl
+    Takes everything in the library and adds it to a location dictionary stored in locations.pkl.
+
+
     :param lib: list of song locations
+
     :param tags: list or NoneType if you already have the tag, then you don't need to generate it again.
+
+
     :return: NoneType
     """
     if os.path.exists('locations.pkl') and os.path.getsize('locations.pkl') > 0:

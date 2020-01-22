@@ -5,13 +5,14 @@ from sklearn import manifold as mnfd
 from sklearn import decomposition as dcomp
 from sklearn import preprocessing as pre
 import pandas as pd
-from analysis import TEST_REGEX, library_from_regex
+from source.analysis import TEST_REGEX, library_from_regex
 import winsound
 from sklearn.pipeline import Pipeline
 import re
-from analysis import corpus_tag_generator
+from source.analysis import corpus_tag_generator
 
 TEST_REGEX = re.compile(TEST_REGEX.pattern)
+here = os.path.dirname(__file__)
 
 musicbee = 'C:\\Users\\Coen D. Needell\\Music\\MusicBee\\Playlists\\'  # Personal playlist location
 
@@ -21,7 +22,9 @@ def load_corpus(loc='cepstra\\', precompiled=False):
     Generates a corpus for machine learning from your preprocessed cepstra. Location should be the same folder you used
     for the analysis.py run. Returns a dict with keys being the 'song code' as made by the analysis.corpus_tag_generator
     function.
+
     :param loc: str directory where the spectra are.
+
     :param precompiled: bool triggers whether or not it should load the corpus from a pickle file or the cepstra folder
     :return: dict
     """
@@ -38,11 +41,14 @@ def load_corpus(loc='cepstra\\', precompiled=False):
     return corpus
 
 
-def create_tag_dict(lib, loc='locations.pkl'):
+def create_tag_dict(lib, loc=here + '/' + 'locations.pkl'):
     """
     Makes a dictionary that relates the tags to associated filename.
+
     :param lib: list contains all of the filenames.
+
     :param loc: str file to dump the tag dictionary in if you want to avoid doing this more than once.
+
     :return:
     """
     mdata_dict = {}
@@ -53,13 +59,28 @@ def create_tag_dict(lib, loc='locations.pkl'):
     return mdata_dict
 
 
-def load_tag_dict(loc='locations.pkl'):
+def load_tag_dict(loc=here + '/' + 'locations.pkl'):
+    """
+    Loads the tag dictionary, and returns it.
+
+    :param loc: str location of pkl
+    :return:
+    """
     with open(loc, 'rb') as file:
         mdata_dict = pickle.load(file)
     return mdata_dict
 
 
-def generate_m3u(tags, title, reference=load_tag_dict(), locale='playlists\\'):
+def generate_m3u(tags, title, reference, locale='playlists\\'):
+    """
+    Takes a list of corpus tags and turns it into a playlist (.m3u).
+
+    :param tags: list of tags
+    :param title: name of plist
+    :param reference: dict tag dictionary, should be something like load_tag_dict()
+    :param locale: str place to dump your playlist
+    :return:
+    """
     with open(f'{locale}{title}.m3u', 'w+', encoding='utf-8') as file:
         for tag in tags:
             file.write(reference[tag] + '\n')

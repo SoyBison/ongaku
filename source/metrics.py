@@ -1,10 +1,17 @@
 import numpy as np
 import pandas as pd
-from learning import load_corpus
+from source.learning import load_corpus
 from scipy.spatial.distance import pdist
 
 
 def corpus_xdsd(mdf):
+    """
+    I call this the xd_sd, it's a cross-dimensional standard deviation, it's essentially the average of the standard
+    deviations in each dimension.
+
+    :param mdf:
+    :return:
+    """
     xd_sd = np.nanmean(mdf.std(axis=0))
     return xd_sd
 

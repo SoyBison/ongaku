@@ -1,11 +1,13 @@
 import numpy as np
 import pandas as pd
-from learning import load_tag_dict
 from scipy.spatial.distance import pdist, cdist, squareform, euclidean
 from time import time
+import os
+
+here = os.path.dirname(__file__)
 
 
-def generate_m3u(tags, title, reference=load_tag_dict('locations.pkl'), locale='playlists\\'):
+def generate_m3u(tags, title, reference, locale='playlists\\'):
     with open(f'{locale}{title}.m3u', 'w+', encoding='utf-8') as file:
         for tag in tags:
             file.write(reference[tag] + '\n')
