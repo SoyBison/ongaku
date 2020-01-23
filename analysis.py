@@ -179,7 +179,7 @@ def library_from_regex(target_regex, library_locale='D:\\What.cd\\'):
     return lib
 
 
-def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
+def preprocess(target_regex, library_locale='D:\\What.cd\\', pool_size=2):
     """
     This runs ```gt_and_store()``` on every file which is in a folder that matches with target_regex. Some notes about
     running this on a personal computer. If you have more than 16 GB of ram, you should be fine. If you have 16 or less,
@@ -197,7 +197,7 @@ def preprocess(target_regex, library_locale='D:\\What.cd\\', ):
     """
 
     lib = library_from_regex(target_regex, library_locale=library_locale)
-    p = mp.Pool(2, maxtasksperchild=1000)
+    p = mp.Pool(pool_size, maxtasksperchild=1000)
     if not os.path.exists('cepstra'):
         os.mkdir('cepstra')
     tags = list(tqdm.tqdm(p.imap(gt_and_store, lib), total=len(lib)))
