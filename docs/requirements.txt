@@ -7,3 +7,4 @@ matplotlib
 soundfile
 numpy
 -e git://github.com/detly/gammatone#egg=gammatone
+m2r

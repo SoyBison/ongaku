@@ -1,9 +1,3 @@
----
-author: "Coen D. Needell"
-title: "Ongaku Readme"
-date: 2020-01-20
----
-
 # Ongaku
 
 ## Overview
