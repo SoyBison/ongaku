@@ -34,23 +34,21 @@ def make_spect(filepath, method='fourier', height=60, interval=1, verbose=False,
     but don't take very much time to create.
 
 
-    :param filepath: str path to file
+    :param str filepath: path to file
 
-    :param method: str 'fourier' or 'gamma'
+    :param str method: 'fourier' or 'gamma'
 
-    :param max_len: int or float the maximum length in seconds of a song to convert. Important for memory management.
+    :param num max_len: the maximum length in seconds of a song to convert. Important for memory management.
     Default is a half-hour
 
-    :param height: int for gammatones, how many quefrency bins should be used. default 60.
+    :param int height: for gammatones, how many quefrency bins should be used. default 60.
 
+    :param int interval: for gammatones, the width in seconds of the time bins. default 2.
 
-    :param interval: int for gammatones, the width in seconds of the time bins. default 2.
+    :param bool verbose: toggles behavior showing a plot of the returned 'gram.
 
-
-    :param verbose: bool toggles behavior showing a plot of the returned 'gram.
-
-
-    :return: np.array a matrix representing (in decibels) the completed analysis.
+    :return: np.array
+    a matrix representing (in decibels) the completed analysis.
     """
     try:
         data, sr = sf.read(filepath)

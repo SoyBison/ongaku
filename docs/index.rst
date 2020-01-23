@@ -11,6 +11,11 @@ Ongaku
    :maxdepth: 2
    :caption: Contents:
 
+Readme
+========
+
+.. mdinclude:: ../README.md
+
 Analysis
 ========
 
